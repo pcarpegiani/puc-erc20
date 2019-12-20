@@ -1,4 +1,4 @@
-var contractAddress = '0xc100084d608ff1f1df70c3d7c850a714d3724e7c'
+var contractAddress = '0x7049bdfa86471aa5bfb39c09140ba96a4a0cd790'
 var provider = new ethers.providers.Web3Provider(web3.currentProvider)
 ethereum.enable()
 
@@ -100,5 +100,29 @@ function approve(delegate, numTokens) {
 		.then(function(result) {
 			console.log('approve - result', result)
 			alert(JSON.stringify(result))
+		})
+}
+
+function buy() {
+	var etherAmount = web3.toBigNumber($('#value').val())
+	var weiValue = web3.toWei(etherAmount, 'ether')
+
+	contract
+		.buy({ value: weiValue.toNumber() })
+		.then(function(transaction) {
+			console.log('buy - transaction', transaction)
+			alert('Sua transação está sendo processada.')
+			return transaction.wait()
+		})
+		.then(function(result) {
+			console.log('buy - result', result)
+			alert('Transação concluída.\n' + JSON.stringify(result))
+		})
+		.catch(function(error) {
+			console.log(error)
+			alert(
+				'Erro ao processar transferência:\nVerifique se o valor digitado é múltiplo de 1e14 wei.\n' +
+					JSON.stringify(error)
+			)
 		})
 }
