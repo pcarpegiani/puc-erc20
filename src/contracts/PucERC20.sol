@@ -1,37 +1,41 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.5.0 <0.6.0;
 
 contract PucERC20 {
 
     string public constant name = "PUC ERC-20";
     string public constant symbol = "PUCERC20";
     uint8 public constant decimals = 18;
+    uint256 public constant token_price = 1e14 wei;
 
-    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-    event Transfer(address indexed from, address indexed to, uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
+    event Transfer(address indexed from, address indexed to, uint256 tokens);
 
     mapping(address => uint256) balances;
     mapping(address => mapping (address => uint256)) allowed;
 
     uint256 totalSupply_;
+    uint256 public amount_eth;
+    address payable owner;
 
     using SafeMath for uint256;
 
     constructor(uint256 total) public {
 	    totalSupply_ = total;
-	    balances[msg.sender] = totalSupply_;
+	    owner = msg.sender;
+	    balances[owner] = totalSupply_;
+        amount_eth = 0;
     }
 
     function totalSupply() public view returns (uint256) {
 	      return totalSupply_;
     }
 
-    function balanceOf(address tokenOwner) public view returns (uint) {
+    function balanceOf(address tokenOwner) public view returns (uint256) {
         return balances[tokenOwner];
     }
 
-    function transfer(address receiver, uint numTokens) public returns (bool) {
+    function transfer(address receiver, uint256 numTokens) public returns (bool) {
         require(numTokens <= balances[msg.sender], "Número de tokens excede o saldo disponível.");
-        require((numTokens % (1e14 wei)) == 0, "A quantidade de tokens só pode ser transferida em múltiplos de 1e14 wei.");
 
         balances[msg.sender] = balances[msg.sender].sub(numTokens);
         balances[receiver] = balances[receiver].add(numTokens);
@@ -39,26 +43,45 @@ contract PucERC20 {
         return true;
     }
 
-    function approve(address delegate, uint numTokens) public returns (bool) {
+    function approve(address delegate, uint256 numTokens) public returns (bool) {
         allowed[msg.sender][delegate] = numTokens;
         emit Approval(msg.sender, delegate, numTokens);
         return true;
     }
 
-    function allowance(address owner, address delegate) public view returns (uint) {
-        return allowed[owner][delegate];
+    function allowance(address _owner, address _delegate) public view returns (uint256) {
+        return allowed[_owner][_delegate];
     }
 
-    function transferFrom(address owner, address buyer, uint numTokens) public returns (bool) {
-        require(numTokens <= balances[owner], "Número de tokens excede o saldo disponível.");
-        require(numTokens <= allowed[owner][msg.sender], "Número de tokens excede o valor permitido.");
-        require((numTokens % (1e14 wei)) == 0, "A quantidade de tokens só pode ser transferida em múltiplos de 1e14 wei.");
+    function transferFrom(address _owner, address _buyer, uint256 numTokens) public returns (bool) {
+        require(numTokens <= balances[_owner], "Número de tokens excede o saldo disponível.");
+        require(numTokens <= allowed[_owner][msg.sender], "Número de tokens excede o valor permitido.");
 
-        balances[owner] = balances[owner].sub(numTokens);
-        allowed[owner][msg.sender] = allowed[owner][msg.sender].sub(numTokens);
-        balances[buyer] = balances[buyer].add(numTokens);
-        emit Transfer(owner, buyer, numTokens);
+        balances[_owner] = balances[_owner].sub(numTokens);
+        allowed[_owner][msg.sender] = allowed[_owner][msg.sender].sub(numTokens);
+        balances[_buyer] = balances[_buyer].add(numTokens);
+        emit Transfer(_owner, _buyer, numTokens);
         return true;
+    }
+
+    function buy() public payable {
+        require(msg.value > 0, "O valor deve ser maior que zero.");
+        require(msg.value.div(1 wei) % token_price == 0, "Valor deve ser de multiplos do preco do token 1e14 wei.");
+
+        uint256 tokens = msg.value / token_price;
+
+        require(balances[owner] > tokens, "Quantidade de tokens indisponível.");
+
+        amount_eth += msg.value;
+
+        balances[owner] -= tokens;
+        balances[msg.sender] += tokens;
+
+        emit Transfer(owner, msg.sender, tokens);
+    }
+
+    function getOwner() public view returns (address) {
+        return owner;
     }
 }
 
@@ -72,5 +95,11 @@ library SafeMath {
       uint256 c = a + b;
       assert(c >= a);
       return c;
+    }
+
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        assert(b > 0);
+        uint256 c = a / b;
+        return c;
     }
 }
