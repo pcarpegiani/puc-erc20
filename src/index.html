@@ -15,7 +15,6 @@
 <body>
   <div class="container">
     <h1>PUC ERC-20 1e14</h1>
-    <p>Este token ERC-20 somente permite a transferência de valores múltiplos de 1e14 wei. Carteira do Vendedor: 0x983236003e1b10ece6dbf6949f0293a46a8f3831</p>
     <div class="panel panel-default">
       <div class="panel-heading">Nome</div>
       <div class="panel-body">
@@ -49,16 +48,31 @@
     </div>
 
     <div class="panel panel-default">
+      <div class="panel-heading">Saldo da Carteira</div>
+      <div class="panel-body">
+        <form>
+          <div class="form-group">
+            <label for="tokenowner">Endereço de carteira</label>
+            <input type="text" class="form-control" id="tokenowner" placeholder="Endereço">
+            <p id="balanceof"></p>
+          </div>
+          <button type="button" onclick="balanceOf()" class="btn btn-default">Enviar</button>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
       <div class="panel-heading">Transferir</div>
       <div class="panel-body">
         <form>
           <div class="form-group">
-            <label for="receiver">Endereço do destinatário dos Tokens - Comprador</label>
+            <label for="receiver">Endereço de destinatário</label>
             <input type="text" class="form-control" id="receiver" placeholder="Endereço">
           </div>
           <div class="form-group">
-            <label for="numtokens">Número de Weys Destinados para Compra - 1 Token = 100000000000000 Wey</label>
-            <input type="text" class="form-control" id="numtokens" placeholder="Múltiplos de 1e14">
+            <label for="numtokens">Número de Tokens</label>
+            <input type="text" class="form-control" id="numtokens" placeholder="1">
           </div>
           <button type="button" onclick="transfer()" class="btn btn-default">Enviar</button>
         </form>
@@ -66,16 +80,16 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">Saldo da Carteira</div>
+      <div class="panel-heading">Comprar</div>
       <div class="panel-body">
         <form>
           <div class="form-group">
-            <label for="tokenowner">Endereço da Carteira do Vendedor</label>
-            <input type="text" class="form-control" id="tokenowner" placeholder="Endereço">
-            <p id="balanceof"></p>
+            <p>Preço: 0.0001 ether = 1 token</p>
+            <p>0.0001 ether = 100000000000000 wei</p>
+            <label for="value">Valor em ether</label>
+            <input type="text" class="form-control" id="value" placeholder="0.0001">
           </div>
-          <button type="button" onclick="balanceOf()" class="btn btn-default">Enviar</button>
-
+          <button type="button" onclick="buy()" class="btn btn-default">Comprar</button>
         </form>
       </div>
     </div>
