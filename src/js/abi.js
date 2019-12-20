@@ -24,6 +24,15 @@ var abiContract = [
 	},
 	{
 		constant: false,
+		inputs: [],
+		name: 'buy',
+		outputs: [],
+		payable: true,
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		constant: false,
 		inputs: [
 			{
 				name: 'receiver',
@@ -49,11 +58,11 @@ var abiContract = [
 		constant: false,
 		inputs: [
 			{
-				name: 'owner',
+				name: '_owner',
 				type: 'address'
 			},
 			{
-				name: 'buyer',
+				name: '_buyer',
 				type: 'address'
 			},
 			{
@@ -131,15 +140,29 @@ var abiContract = [
 		constant: true,
 		inputs: [
 			{
-				name: 'owner',
+				name: '_owner',
 				type: 'address'
 			},
 			{
-				name: 'delegate',
+				name: '_delegate',
 				type: 'address'
 			}
 		],
 		name: 'allowance',
+		outputs: [
+			{
+				name: '',
+				type: 'uint256'
+			}
+		],
+		payable: false,
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		constant: true,
+		inputs: [],
+		name: 'amount_eth',
 		outputs: [
 			{
 				name: '',
@@ -186,6 +209,20 @@ var abiContract = [
 	{
 		constant: true,
 		inputs: [],
+		name: 'getOwner',
+		outputs: [
+			{
+				name: '',
+				type: 'address'
+			}
+		],
+		payable: false,
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		constant: true,
+		inputs: [],
 		name: 'name',
 		outputs: [
 			{
@@ -205,6 +242,20 @@ var abiContract = [
 			{
 				name: '',
 				type: 'string'
+			}
+		],
+		payable: false,
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		constant: true,
+		inputs: [],
+		name: 'token_price',
+		outputs: [
+			{
+				name: '',
+				type: 'uint256'
 			}
 		],
 		payable: false,
